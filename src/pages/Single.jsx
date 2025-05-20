@@ -1,37 +1,77 @@
-// Import necessary hooks and components from react-router-dom and other libraries.
-import { Link, useParams } from "react-router-dom";  // To use link for navigation and useParams to get URL parameters
-import PropTypes from "prop-types";  // To define prop types for this component
-import rigoImageUrl from "../assets/img/rigo-baby.jpg"  // Import an image asset
-import useGlobalReducer from "../hooks/useGlobalReducer";  // Import a custom hook for accessing the global state
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fotosPersonajes, fotosPlanetas, fotosVehiculos } from "../assets/imagenes";
 
-// Define and export the Single component which displays individual item details.
-export const Single = props => {
-  // Access the global state using the custom hook.
-  const { store } = useGlobalReducer()
+export const Single = () => {
+  const { type, uid } = useParams();
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Retrieve the 'theId' URL parameter using useParams hook.
-  const { theId } = useParams()
-  const singleTodo = store.todos.find(todo => todo.id === parseInt(theId));
+  const fotosName = (name) => {
+    const dict = {
+      people: fotosPersonajes,
+      planets: fotosPlanetas,
+      vehicles: fotosVehiculos
+    };
+    const arr = dict[type];
+    if (!arr) return "https://via.placeholder.com/600x400";
+    const found = arr.find(img => img.name === name);
+    return found ? found.url : "https://via.placeholder.com/600x400";
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`https://www.swapi.tech/api/${type}/${uid}`);
+        const data = await res.json();
+        setItem(data.result);
+      } catch (error) {
+        console.error("Error al cargar el recurso:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [type, uid]);
+  
+  if (loading) return <p className="text-center mt-4">Cargando datos...</p>;
+  if (!item) return <p className="text-center mt-4">No se encontró el elemento.</p>;
+
+  const { description, properties } = item;
+  const name = properties?.name || "Sin nombre";
+
+  const keysToShow = {
+    people: ["gender", "birth_year", "eye_color", "hair_color", "height", "mass"],
+    planets: ["climate", "population", "orbital_period", "rotation_period", "diameter"],
+    vehicles: ["model", "manufacturer", "cost_in_credits", "max_atmosphering_speed", "crew", "passengers"]
+  };
+  
   return (
-    <div className="container text-center">
-      {/* Display the title of the todo element dynamically retrieved from the store using theId. */}
-      <h1 className="display-4">Todo: {singleTodo?.title}</h1>
-      <hr className="my-4" />  {/* A horizontal rule for visual separation. */}
+    <div className="container my-5 text-dark">
+      <div className="row align-items-center">
+        <div className="col-md-6 mb-4">
+          <img src={fotosName(name)} alt={name} className="img-fluid rounded" style={{ maxHeight: "400px", objectFit: "cover" }} />
+        </div>
+        <div className="col-md-6">
+          <h1 className="text">{name}</h1>
+          <p className="mt-3">
+            {description || "No hay descripción disponible. Lorem ipsum dolor sit amet consectetur adipiscing elit."}
+          </p>
+        </div>
+      </div>
 
-      {/* A Link component acts as an anchor tag but is used for client-side routing to prevent page reloads. */}
-      <Link to="/">
-        <span className="btn btn-primary btn-lg" href="#" role="button">
-          Back home
-        </span>
-      </Link>
+      <hr className="border-danger my-5" />
+
+      <div className="row text-center text-danger">
+        {keysToShow[type]?.map(key => (
+          <div className="col-6 col-md-2 mb-3" key={key}>
+            <h6 className="text-uppercase fw-bold">{key.replaceAll("_", " ")}</h6>
+            <p className="mb-0">{properties[key]}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
-
-// Use PropTypes to validate the props passed to this component, ensuring reliable behavior.
-Single.propTypes = {
-  // Although 'match' prop is defined here, it is not used in the component.
-  // Consider removing or using it as needed.
-  match: PropTypes.object
 };
