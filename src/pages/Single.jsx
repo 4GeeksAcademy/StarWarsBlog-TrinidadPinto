@@ -52,7 +52,7 @@ export const Single = () => {
     <div className="container my-5 text-dark">
       <div className="row align-items-center">
         <div className="col-md-6 mb-4">
-          <img src={fotosName(name)} alt={name} className="img-fluid rounded" style={{ maxHeight: "400px", objectFit: "cover" }} />
+          <img src={fotosName(name)} alt={name} className="img-fluid rounded" style={{ minHeight: "400px", objectFit: "cover" }} />
         </div>
         <div className="col-md-6">
           <h1 className="text">{name}</h1>

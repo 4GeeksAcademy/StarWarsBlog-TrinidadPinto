@@ -22,9 +22,9 @@ const Planetas = () => {
                 return (
                     <div key={planeta.uid} className="card" style={{minWidth: "400px"}}>
                         <img 
-                        src={fotosName(planeta.name)}
-                        className="card-img-top"
-                        alt={planeta.name}
+                            src={fotosName(planeta.name)}
+                            className="card-img-top"
+                            alt={planeta.name}
                         />
                         <div className="card-body">
                             <h5 className="card-title">{planeta.name}</h5>

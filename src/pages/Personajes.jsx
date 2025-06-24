@@ -36,7 +36,7 @@ const Personajes = () => {
                                     <p>Color ojos: {eye_color}</p>
                                 </>
                             ) : (
-                                <p>Cargando descripcion...</p>
+                                <p>Cargando descripción...</p>
                             )}
                             <Link to={`/single/people/${personaje.uid}`} className="btn btn-primary">
                             Ver más

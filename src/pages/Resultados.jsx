@@ -34,39 +34,44 @@ export const Resultados = () => {
                     const esFavorito = favoritos.some(fav => fav.uid === item.uid && fav.type === item.type);
 					const { gender, hair_color, eye_color, climate, population, model } = item.properties || {};
                     return (
-                        <div key={item.uid || i} className="card" style={{ minWidth: "400px" }}>
-                            <img
-                                src={obtenerImagen(item)}
-                                className="card-img-top"
-                                alt={item.name}
-                            />
-                            <div className="card-body">
-                                <h5 className="card-title">{item.name}</h5>
-                                {item.type === "people" && (
-                                    <>
-                                        <p>Género: {gender}</p>
-                                        <p>Color pelo: {hair_color}</p>
-                                        <p>Color ojos: {eye_color}</p>
-                                    </>
-                                )}
+                        <div key={item.uid || i} className="col-sm-6 col-md-4 col-lg-3">
+                            <div className="card h-100">
+                                <img
+                                    src={obtenerImagen(item)}
+                                    className="card-img-top"
+                                    alt={item.name}
+                                />
+                                <div className="card-body d-flex flex-column">
+                                    <h5 className="card-title">{item.name}</h5>
 
-                                {item.type === "planets" && (
-                                    <>
-                                        <p>Clima: {climate}</p>
-                                        <p>Población: {population}</p>
-                                    </>
-                                )}
+                                    {item.type === "people" && (
+                                        <>
+                                            <p>Género: {gender}</p>
+                                            <p>Color pelo: {hair_color}</p>
+                                            <p>Color ojos: {eye_color}</p>
+                                        </>
+                                    )}
 
-                                {item.type === "vehicles" && (
-                                    <>
-                                        <p>Modelo: {model}</p>
-                                    </>
-                                )}
+                                    {item.type === "planets" && (
+                                        <>
+                                            <p>Clima: {climate}</p>
+                                            <p>Población: {population}</p>
+                                        </>
+                                    )}
 
-                                <Link to={`/single/${item.type}/${item.uid}`} className="btn btn-primary">Ver más</Link>
-                                <button className="btn btn-outline-warning ms-2" onClick={() => toggleFavorito(item)}>
-                                    <i className={`fa-${esFavorito ? "solid" : "regular"} fa-heart`}></i>
-                                </button>
+                                    {item.type === "vehicles" && (
+                                        <>
+                                            <p>Modelo: {model}</p>
+                                        </>
+                                    )}
+                                    
+                                    <div className="mt-auto d-flex justify-content-between align-item-center">
+                                        <Link to={`/single/${item.type}/${item.uid}`} className="btn btn-primary">Ver más</Link>
+                                        <button className="btn btn-outline-warning ms-2" onClick={() => toggleFavorito(item)}>
+                                            <i className={`fa-${esFavorito ? "solid" : "regular"} fa-heart`}></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     );

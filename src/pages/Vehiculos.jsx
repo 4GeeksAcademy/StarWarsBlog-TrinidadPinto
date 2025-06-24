@@ -22,9 +22,10 @@ const Vehiculos = () => {
                 return(
                     <div key={vehiculo.uid} className="card" style={{minWidth: "400px"}}>
                         <img 
-                        src={fotosName(vehiculo.name)}
-                        className="card-img-top"
-                        alt={vehiculo.name}
+                            src={fotosName(vehiculo.name)}
+                            className="card-img-top"
+                            alt={vehiculo.name}
+                            style={{height: "200px"}}
                         />
                         <div className="card-body">
                             <h5 className="card-title">{vehiculo.name}</h5>
@@ -44,7 +45,7 @@ const Vehiculos = () => {
                                 className="btn btn-outline-warning ms-2"
                                 onClick={() => dispatch({ type: "TOGGLE_FAVORITO", payload: { uid: vehiculo.uid, name: vehiculo.name, tipo: "vehicles" }})}
                             >
-                                <i className={`fa-${esFavorito ? "solido" : "regular"} fa-heart`}></i>
+                                <i className={`fa-${esFavorito ? "solid" : "regular"} fa-heart`}></i>
                             </button>
                         </div>
                     </div>

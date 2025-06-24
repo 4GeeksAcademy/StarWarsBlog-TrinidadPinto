@@ -20,29 +20,98 @@ export default function useGlobalReducer() {
         try {
             const res = await fetch("https://www.swapi.tech/api/people");
             const data = await res.json();
-            dispatch({ type: "SET_PERSONAJES", payload: data.results });
+
+            const detalles = await Promise.all(
+                data.results.map(async (personaje) => {
+                    try {
+                        const detalleRes = await fetch(personaje.url);
+                        const detalleData = await detalleRes.json();
+
+                        return {
+                            uid: detalleData.result.uid,
+                            name: detalleData.result.properties.name,
+                            properties: detalleData.result.properties
+                        };
+                    } catch (err) {
+                        console.warn(`Error cargando detalles de ${personaje.name}:`, err);
+                        return {
+                            uid: personaje.uid,
+                            name: personaje.name,
+                            properties: null
+                        };
+                    }
+                })
+            );
+            dispatch({ type: "SET_PERSONAJES", payload: detalles });
         } catch (err) {
             console.error("Error cargando personajes:", err);
         }
     };
+
     const getPlanetas = async () => {
         try {
             const res = await fetch("https://www.swapi.tech/api/planets");
             const data = await res.json();
-            dispatch({ type: "SET_PLANETAS", payload: data.results });
+
+            const detalles = await Promise.all(
+                data.results.map(async (planeta) => {
+                    try {
+                        const detalleRes = await fetch(planeta.url);
+                        const detalleData = await detalleRes.json();
+
+                        return {
+                            uid: detalleData.result.uid,
+                            name: detalleData.result.properties.name,
+                            properties: detalleData.result.properties
+                        };
+                    } catch (err) {
+                        console.warn(`Error cargando detalles de ${planeta.name}:`, err);
+                        return {
+                            uid: planeta.uid,
+                            name: planeta.name,
+                            properties: null
+                        };
+                    }
+                })
+            );
+            dispatch({ type: "SET_PLANETAS", payload: detalles });
         } catch (err) {
             console.error("Error cargando planetas:", err);
         }
     };
+
     const getVehiculos = async () => {
         try {
             const res = await fetch("https://www.swapi.tech/api/vehicles");
             const data = await res.json();
-            dispatch({ type: "SET_VEHICULOS", payload: data.results });
+
+            const detalles = await Promise.all(
+                data.results.map(async (vehiculo) => {
+                    try {
+                        const detalleRes = await fetch(vehiculo.url);
+                        const detalleData = await detalleRes.json();
+
+                        return {
+                            uid: detalleData.result.uid,
+                            name: detalleData.result.properties.name,
+                            properties: detalleData.result.properties
+                        };
+                    } catch (err) {
+                        console.warn(`Error cargando detalles de ${vehiculo.name}:`, err);
+                        return {
+                            uid: vehiculo.uid,
+                            name: vehiculo.name,
+                            properties: null
+                        };
+                    }
+                })
+            );
+            dispatch({ type: "SET_VEHICULOS", payload: detalles });
         } catch (err) {
             console.error("Error cargando vehiculos:", err);
         }
     };
+
     const buscarGlobal = (query) => {
         const q = query.toLowerCase();
         const resultados = [
