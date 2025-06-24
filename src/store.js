@@ -1,8 +1,10 @@
-export const initialStore=()=>{
-   return{
-    favoritos: [],
-  };
-};
+export const initialStore = () => ({
+  favoritos: [],
+  personajes: [],
+  planetas: [],
+  vehiculos: [],
+  busquedas: [],
+});
 
 export default function storeReducer(store, action = {}) {
   switch(action.type){
@@ -20,6 +22,31 @@ export default function storeReducer(store, action = {}) {
         favoritos: favoritosNuevos
       };
     }
+
+    case 'SET_PERSONAJES':
+      return {
+        ...store,
+        personajes: action.payload
+      };
+
+    case 'SET_PLANETAS':
+      return {
+        ...store,
+        planetas: action.payload
+      };
+
+    case 'SET_VEHICULOS':
+      return {
+        ...store,
+        vehiculos: action.payload
+      };
+
+    case 'SET_BUSQUEDAS':
+      return {
+        ...store,
+        busquedas: action.payload
+      };
+      
     default:
       return store;
   }    

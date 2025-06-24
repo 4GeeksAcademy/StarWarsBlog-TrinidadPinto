@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import Personajes from "./Personajes.jsx";
 import Planetas from "./Planetas.jsx";
 import Vehiculos from "./Vehiculos.jsx";
+import { useActionState } from "react";
 
 export const Home = () => {
 
-  	const {store, dispatch} =useGlobalReducer()
+  	const {store, actions} =useGlobalReducer()
+	useEffect(() => {
+		actions.getPersonajes();
+		actions.getPlanetas();
+		actions.getVehiculos();
+	}, []);
 
 	return (
 		<div className="container my-4">

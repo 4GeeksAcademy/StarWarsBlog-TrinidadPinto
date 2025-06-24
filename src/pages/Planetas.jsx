@@ -1,49 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { fotosPlanetas } from "../assets/imagenes";
 
 const Planetas = () => {
     const { store, dispatch } = useGlobalReducer();
-    const [planets, setPlanetas] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const planetas = store.planetas;
+
+    if (planetas.length === 0) return <p className="text-center">Cargando planetas...</p>
 
     const fotosName = (name) => {
         const found = fotosPlanetas.find(img => img.name === name);
         return found ? found.url : "https://via.placeholder.com/400x200";
     };
 
-    useEffect(() => {
-        const getPlanetas = async () => {
-            try {
-                const res = await fetch("https://www.swapi.tech/api/planets");
-                const data = await res.json();
-                const detalles = await Promise.all(
-                    data.results.map(async (planeta) =>{
-                        const detalleRes = await fetch(planeta.url);
-                        const detalleData = await detalleRes.json();
-                        return {
-                            ...planeta,
-                            properties: detalleData.result.properties
-                        };
-                    })
-                );
-                setPlanetas(detalles);
-            } catch (error) {
-                console.error("Error al obtener planetas:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        getPlanetas();
-    }, []);
-
-    if (loading) return <p className="text-center">Cargando planetas...</p>;
-
     return (
         <>
-            {planets.map((planeta) => {
+            {planetas.map((planeta) => {
                 const esFavorito = store.favoritos.some(fav => fav.uid === planeta.uid && fav.type === "planets");
                 const { population, terrain } = planeta.properties || {};
                 return (

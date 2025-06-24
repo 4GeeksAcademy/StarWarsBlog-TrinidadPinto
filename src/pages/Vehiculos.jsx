@@ -1,48 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { fotosVehiculos } from "../assets/imagenes";
 
 const Vehiculos = () => {
     const { store, dispatch } = useGlobalReducer();
-    const [vehicles, setVehiculos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const vehiculos = store.vehiculos;
+
+    if (vehiculos.length === 0) return <p className="text-center">Cargando vehiculos...</p>
 
     const fotosName = (name) => {
         const found = fotosVehiculos.find(img => img.name === name);
         return found ? found.url : "https://via.placeholder.com/400x200";
     };
 
-    useEffect(() => {
-        const getVehiculos = async () => {
-            try {
-                const res = await fetch("https://www.swapi.tech/api/vehicles");
-                const data = await res.json();
-                const detalles = await Promise.all(
-                    data.results.map(async (vehiculo) =>{
-                        const detalleRes = await fetch(vehiculo.url);
-                        const detalleData = await detalleRes.json();
-                        return {
-                            ...vehiculo,
-                            properties: detalleData.result.properties
-                        };
-                    })
-                );
-                setVehiculos(detalles);
-            } catch (error) {
-                console.error("Error al obtener vehículos:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        getVehiculos();
-    }, []);
-
-    if (loading) return <p className="text-center">Cargando vehículos...</p>;
-
     return (
         <>
-            {vehicles.map((vehiculo) => {
+            {vehiculos.map((vehiculo) => {
                 const esFavorito = store.favoritos.some(fav => fav.uid === vehiculo.uid && fav.type === "vehicles");
                 const { cargo_capacity, passengers, vehicle_class } = vehiculo.properties || {};
                 return(
